@@ -1,14 +1,20 @@
-import { Group, Layer, Rect, Shape, Stage, Text } from "react-konva";
-import { CanvasPage } from "./canvasPage";
-import { Button } from "./ui/button";
+"use client";
+import { Layer, Stage } from "react-konva";
+import React, { ReactNode } from "react";
+import { Html } from "react-konva-utils";
 
-export default function MyCanvas() {
+interface CanvasProps {
+  children: ReactNode;
+}
+
+const Canvas: React.FC<CanvasProps> = ({ children }) => {
   return (
-    <Stage
-      height={window.innerHeight}
-      width={window.innerWidth}
-      className="flex flex-col gap-12 justify-center items-center absolute"
-    >
+    <Stage width={window.innerWidth} height={window.innerHeight}>
+      <Layer>
+        <Html>{children}</Html>
+      </Layer>
     </Stage>
   );
-}
+};
+
+export default Canvas;

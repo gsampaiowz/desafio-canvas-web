@@ -8,7 +8,7 @@ export const CanvasPage = () => {
   return (
     <div className="flex flex-col">
       <Trash2 className="bg-gray-300 fill-gray-400 text-gray-500 mb-2 self-end p-1 rounded size-7 cursor-pointer" />
-      <div className="p-4 flex flex-col gap-4 bg-gray-300">
+      <div className="p-4 flex flex-col gap-4 bg-gray-300 w-56">
         <PageItem text="teste" />
         <PageItem text="teste" />
         <PageItem text="teste" />

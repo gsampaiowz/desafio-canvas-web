@@ -1,27 +1,28 @@
 "use client";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import { CanvasPage } from "@/components/canvasPage";
 import { Button } from "@/components/ui/button";
-import dynamic from "next/dynamic";
 
-const MyCanvas = dynamic(() => import("../components/myCanvas"), {
+const Canvas = dynamic(() => import("../components/myCanvas"), {
   ssr: false,
 });
 
-export default function Home() {
+const HomePage: React.FC = () => {
   return (
-    <main>
-      <MyCanvas/>
-        
-         <div className="flex gap-20">
+    <Canvas>
+      <main className="flex flex-col gap-24 justify-center items-center h-screen w-screen">
+        <div className="flex gap-20">
           <CanvasPage />
           <CanvasPage />
           <CanvasPage />
         </div>
-        <div className="py-2 px-64 bg-gray-200 border border-gray-400 rounded-lg absolute bottom-4 left-1/2 -translate-x-1/2">
-          <Button className="py-6 px-12 bg-gray-500 hover:bg-gray-400">
-            + Nova página
-          </Button>
-        </div> 
-    </main>
+        <div className="py-2 px-64 bg-gray-200 border border-gray-400 rounded-lg">
+          <Button className="py-6 px-12 bg-gray-500">+ Nova página</Button>
+        </div>
+      </main>
+    </Canvas>
   );
-}
+};
+
+export default HomePage;
