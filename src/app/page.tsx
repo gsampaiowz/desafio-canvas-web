@@ -32,17 +32,7 @@ type DNDType = {
 };
 
 const HomePage: React.FC = () => {
-  const viewer = useRef<InfiniteViewerProps>(null);
-
-  interface ItemProps {
-    id: Number;
-    text: string;
-  }
-
-  interface PageProps {
-    id: Number;
-    items: ItemProps[];
-  }
+  // const viewer = useRef<InfiniteViewerProps>(null);
 
   const [pages, setPages] = useState<DNDType[]>([]);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -59,10 +49,13 @@ const HomePage: React.FC = () => {
     ]);
   };
 
-  const onAddItem = () => {
+  const onAddItem = (pageId: UniqueIdentifier) => {
+    console.log("teste");
     const id = `item-${uuidv4()}`;
-    const page = pages.find((item) => item.id === currentPageId);
+    const page = pages.find((item) => item.id === pageId);
+    console.log("teste");
     if (!page) return;
+
     page.items.push({
       id,
       title: "teste",
@@ -353,9 +346,7 @@ const HomePage: React.FC = () => {
           {pages.map((page, index) => (
             <CanvasPage
               id={page.id}
-              onAddItem={() => {
-                setCurrentPageId(page.id);
-              }}
+              onAddItem={() => onAddItem(page.id)}
               key={index}
             >
               <SortableContext items={page.items.map((i) => i.id)}>
@@ -370,13 +361,8 @@ const HomePage: React.FC = () => {
         </SortableContext>
       </DndContext>
 
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 py-2 px-64 bg-gray-200 border border-gray-400 rounded-lg">
-        <Button
-          onClick={() =>
-            setPages([...pages, { id: pages.length + 1, items: [] }])
-          }
-          className="py-6 px-12 bg-gray-500"
-        >
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 py-2 px-64 bg-neutral-200 border border-neutral-400 rounded-lg">
+        <Button onClick={onAddPage} className="py-6 px-12 bg-neutral-500">
           + Nova página
         </Button>
       </div>

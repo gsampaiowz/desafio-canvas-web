@@ -12,14 +12,7 @@ interface PageProps {
 }
 
 export const CanvasPage = ({ id, children, onAddItem }: PageProps) => {
-  const {
-    attributes,
-    setNodeRef,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, setNodeRef, listeners, transform } = useSortable({
     id: id,
     data: {
       type: "container",
@@ -32,21 +25,19 @@ export const CanvasPage = ({ id, children, onAddItem }: PageProps) => {
       }
     : undefined;
 
-  const [itemsPage, setItemsPage] = useState();
-
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
-      className="flex flex-col p-4 bg-gray-300 rounded w-min h-72"
+      className="flex flex-col p-4 bg-neutral-300 border border-neutral-400 rounded w-min h-72"
     >
-      <Trash2 className="bg-gray-300 fill-gray-400 text-gray-500 mb-2 self-end p-1 rounded size-7 cursor-pointer" />
+      <Trash2 className="bg-neutral-300 fill-neutral-400 text-neutral-500 mb-2 self-end p-1 rounded size-7 cursor-pointer" />
       {children}
       <Button
         onClick={onAddItem}
-        className="bg-transparent mt-6 rounded-none border border-dashed border-gray-500 text-gray-500 hover:bg-gray-200"
+        className="bg-transparent mt-6 rounded-none border border-dashed border-neutral-500 text-neutral-500 hover:bg-neutral-200"
       >
         + Novo item
       </Button>
