@@ -33,11 +33,12 @@ export const CanvasPage = ({ id, children, onAddItem }: PageProps) => {
       {...attributes}
       className="flex flex-col p-4 bg-neutral-300 border border-neutral-400 rounded w-min h-72"
     >
-      <Trash2 className="bg-neutral-300 fill-neutral-400 text-neutral-500 mb-2 self-end p-1 rounded size-7 cursor-pointer" />
+      <Trash2 onClick={()=> console.log("teste")} className="bg-neutral-300 fill-neutral-400 text-neutral-500 mb-2 self-end p-1 rounded size-7 cursor-pointer relative z-50" />
       {children}
       <Button
-        onClick={onAddItem}
         className="bg-transparent mt-6 rounded-none border border-dashed border-neutral-500 text-neutral-500 hover:bg-neutral-200"
+        onClick={()=> console.log("teste")
+        }
       >
         + Novo item
       </Button>
