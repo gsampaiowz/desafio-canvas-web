@@ -1,20 +1,20 @@
 "use client";
+
 import { DraggablePage } from "@/components/draggablePage";
-import { PageItem } from "@/components/pageItem";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { useEffect, useRef, useState } from "react";
+import { createSwapy } from "swapy";
 import { v4 as uuid } from "uuid";
 
-type PageProps = {
-  id: string;
-  items: {
+function App() {
+  type PageProps = {
     id: string;
-    title: string;
-  }[];
-};
+    items: {
+      id: string;
+      title: string;
+    }[];
+  };
 
-const Desafio: React.FC = () => {
   const [pages, setPages] = useState<PageProps[]>([
     {
       id: uuid(),
@@ -51,33 +51,46 @@ const Desafio: React.FC = () => {
     setPages([...pages]);
   };
 
-  return (
-    // <InfiniteViewer
-    // displayVerticalScroll={false}
-    // displayHorizontalScroll={false}
-    // className="!w-screen !h-screen"
-    // useMouseDrag={true}
-    // useWheelScroll={true}
-    // useAutoZoom={true}
-    // zoomRange={[0.1, 10]}
-    // maxPinchWheel={10}
-    // onDragStart={(e) => {
-    //   const target = e.inputEvent.target;
+  const containerDrag = useRef(null);
+  useEffect(() => {
+    const swapy = createSwapy(containerDrag.current);
+    swapy.onSwap(({ data }) => {
+      localStorage.setItem("slotItem", JSON.stringify(data.object));
+    });
 
-    //   if (target.nodeName === "A") {
-    //     e.stop();
-    //   }
-    // }}
-    // >
-    <main className="flex justify-center items-center h-screen w-screen">
+    return () => {
+      swapy.destroy();
+    };
+  }, [pages]);
+
+  return (
+    <main>
+      <div ref={containerDrag} className="flex gap-4">
+        {pages.map((page, index) => (
+            <div key={page.id} data-swapy-slot={index}>
+              <div data-swapy-item={index}>
+                <DraggablePage />
+              </div>
+            </div>
+        ))}
+        {/* <div data-swapy-slot={0}>
+            <div data-swapy-item={0} >
+              <DraggablePage />
+            </div>
+          </div>
+          <div data-swapy-slot={1}>
+            <div data-swapy-item={1} >
+              <DraggablePage />
+            </div>
+          </div> */}
+      </div>
       <div className="fixed bottom-5 left-1/2 -translate-x-1/2 py-2 px-64 bg-neutral-200 border border-neutral-400 rounded-lg">
         <Button onClick={AddPage} className="py-6 px-12 bg-neutral-500">
           + Nova página
         </Button>
       </div>
     </main>
-    // </InfiniteViewer>
   );
-};
+}
 
-export default Desafio;
+export default App;
