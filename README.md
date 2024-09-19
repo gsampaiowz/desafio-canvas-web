@@ -18,4 +18,4 @@ Abra [http://localhost:3000](http://localhost:3000) com seu navegador para ver o
 
 Você pode começar a editar a página modificando `app/page.tsx`. A página é atualizada automaticamente conforme você edita o arquivo.
 
-Este projeto usa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimizar e carregar automaticamente o [Geist](https://vercel.com/ font), uma nova família de fontes para Vercel.
+Este projeto usa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimizar e carregar automaticamente o [Geist](https://vercel.com/font), uma nova família de fontes para Vercel.
