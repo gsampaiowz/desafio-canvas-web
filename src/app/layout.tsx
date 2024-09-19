@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import InfiniteViewer from "react-infinite-viewer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

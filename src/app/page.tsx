@@ -4,21 +4,23 @@ import { DraggablePage } from "@/components/draggablePage";
 import { MyDroppable } from "@/components/myDroppable";
 import { PageItem } from "@/components/pageItem";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import InfiniteViewer from "react-infinite-viewer";
-import { createSwapy } from "swapy";
+import { useState } from "react";
+import { DragDropContext, Draggable, DraggableLocation, DropResult } from "react-beautiful-dnd";
 import { v4 as uuid } from "uuid";
 
-function App() {
-  type PageProps = {
-    id: string;
-    items: {
-      id: string;
-      title: string;
-    }[];
-  };
+//Tipagem para as páginas
+type ItemProps = {
+  id: string;
+  title: string;
+};
 
+export type PageProps = {
+  id: string;
+  items: ItemProps[];
+};
+
+function App() {
+  //Lista das páginas com seus itens
   const [pages, setPages] = useState<PageProps[]>([
     {
       id: uuid(),
@@ -31,6 +33,7 @@ function App() {
     },
   ]);
 
+  //Adicionar página
   const AddPage = () => {
     const id = `container-${uuid()}`;
     setPages([
@@ -42,6 +45,13 @@ function App() {
     ]);
   };
 
+  // Deletar página
+  const DeletePage = (id: string) => {
+    const newPages = pages.filter((x) => x.id !== id);
+    setPages(newPages);
+  };
+
+  //Adicionar Item
   const AddItem = (pageId: string) => {
     const id = `item-${uuid()}`;
     const page = pages.find((item) => item.id === pageId);
@@ -55,13 +65,18 @@ function App() {
     setPages([...pages]);
   };
 
-  const getItems = (count: any, offset = 0) =>
-    Array.from({ length: count }, (v, k) => k).map((k) => ({
-      id: `item-${k + offset}-${new Date().getTime()}`,
-      content: `item ${k + offset}`,
+  // Deletar Item
+  const DeleteItem = (id: string) => {
+    const newPages = pages.map((x) => ({
+      ...x,
+      items: x.items.filter((x) => x.id !== id),
     }));
 
-  const reorder = (list: any, startIndex: any, endIndex: any) => {
+    setPages(newPages);
+  };
+
+  //Reordena itens dentro da página após arrastar
+  const reorder = (list: ItemProps[], startIndex: number, endIndex: number) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -69,14 +84,12 @@ function App() {
     return result;
   };
 
-  /**
-   * Moves an item from one list to another list.: any
-   */
+  //Move item de uma página para outra
   const move = (
-    source: any,
-    destination: any,
-    droppableSource: any,
-    droppableDestination: any
+    source: ItemProps[],
+    destination: ItemProps[],
+    droppableSource: DraggableLocation,
+    droppableDestination: DraggableLocation
   ) => {
     const sourceClone = Array.from(source);
     const destClone = Array.from(destination);
@@ -84,27 +97,34 @@ function App() {
 
     destClone.splice(droppableDestination.index, 0, removed);
 
-    const result = {} as any;
+    const result: Record<string, ItemProps[]> = {};
+    
     result[droppableSource.droppableId] = sourceClone;
     result[droppableDestination.droppableId] = destClone;
+
+    console.log(result);
+    
 
     return result;
   };
 
-  function onDragEnd(result: any) {
+  //Configuração para executar o arrastar e soltar
+  function onDragEnd(result: DropResult) {
     const { source, destination } = result;
 
-    // dropped outside the list
+    //se há um destino ao arrastar
     if (!destination) {
       return;
     }
+    //index do droppable de partida
     const sInd = +source.droppableId;
+    //index do droppable de destino
     const dInd = +destination.droppableId;
 
     if (sInd === dInd) {
       const items = reorder(pages[sInd].items, source.index, destination.index);
       const newPages = pages;
-      newPages[sInd].items = items as any;
+      newPages[sInd].items = items as ItemProps[];
       setPages(newPages);
     } else {
       const result = move(
@@ -123,65 +143,56 @@ function App() {
   }
 
   return (
-    <InfiniteViewer
-      displayVerticalScroll={false}
-      displayHorizontalScroll={false}
-      className="!w-screen !h-screen flex justify-center items-center viewer"
-      useMouseDrag={true}
-      useWheelScroll={true}
-      useAutoZoom={true}
-      zoomRange={[0.1, 10]}
-      maxPinchWheel={10}
-      onDragStart={(e) => {
-        const target = e.inputEvent.target;
-        if (target.id !== "main") {
-          e.stop();
-        }
-      }}
-    >
-      <div id="main" className="flex justify-center items-center gap-8">
-        <DragDropContext onDragEnd={onDragEnd}>
-          {pages.map((page, index) => (
-            <MyDroppable key={index} droppableId={index.toString()}>
-              {(provided, snapshot) => (
-                <div
-                  className="pointer-events-auto"
-                  key={page.id}
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
+    <main className="flex w-screen h-screen overflow-auto justify-center items-center gap-8 ">
+      <DragDropContext onDragEnd={onDragEnd}>
+        {pages.map((page, index) => (
+          <MyDroppable key={index} droppableId={index.toString()}>
+            {(provided) => (
+              <div
+                className="pointer-events-auto"
+                key={page.id}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <DraggablePage
+                  onDeletePage={() => DeletePage(page.id)}
+                  onAddItem={() => AddItem(page.id)}
                 >
-                  <DraggablePage onAddItem={() => AddItem(page.id)}>
-                    {page.items.map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <PageItem title={item.title} />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                  </DraggablePage>
-                  {provided.placeholder}
-                </div>
-              )}
-            </MyDroppable>
-          ))}
-        </DragDropContext>
+                  {page.items.map((item, index) => (
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <PageItem
+                            pages={pages}
+                            setPages={setPages}
+                            onDeleteItem={() => DeleteItem(item.id)}
+                            item={item}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                </DraggablePage>
+                {provided.placeholder}
+              </div>
+            )}
+          </MyDroppable>
+        ))}
+      </DragDropContext>
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 py-2 px-64 bg-neutral-200 border border-neutral-400 rounded-lg">
+        <Button onClick={AddPage} className="py-6 px-12 bg-neutral-500">
+          + Nova página
+        </Button>
       </div>
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 py-2 px-64 bg-neutral-200 border border-neutral-400 rounded-lg">
-          <Button onClick={AddPage} className="py-6 px-12 bg-neutral-500">
-            + Nova página
-          </Button>
-        </div>
-    </InfiniteViewer>
+    </main>
   );
 }
 
