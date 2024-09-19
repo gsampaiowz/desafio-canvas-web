@@ -20,4 +20,4 @@ Você pode começar a editar a página modificando `app/page.tsx`. A página é 
 
 Este projeto usa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimizar e carregar automaticamente o [Geist](https://vercel.com/font), uma nova família de fontes para Vercel.
 
-###[Acessar Video](https://www.loom.com/share/e2a25cbeecc94b36ab62f61556edaa87?sid=fe207854-7549-4bf7-a4ae-9b85fa083444)
+[Acessar Video](https://www.loom.com/share/e2a25cbeecc94b36ab62f61556edaa87?sid=fe207854-7549-4bf7-a4ae-9b85fa083444)
