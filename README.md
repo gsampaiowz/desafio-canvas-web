@@ -5,13 +5,13 @@ Este é um projeto [Next.js](https://nextjs.org) inicializado com [`create-next-
 Primeiro, execute o servidor de desenvolvimento:
 
 ```bash
-npm executar dev
-# ou
-desenvolvedor de fios
-# ou
-desenvolvedor pnpm
-# ou
-desenvolvedor de pão
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
 Abra [http://localhost:3000](http://localhost:3000) com seu navegador para ver o resultado.
